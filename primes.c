@@ -12,7 +12,6 @@
 int main()
 {
     my_hello();
-    bit_hello();
     return 0; 
 }
 
