@@ -7,19 +7,22 @@
 #include <stdio.h>
 #include "primes.h"
 
+#define ARRAY_SIZE 1000
 
 
 int main()
 {
-    unsigned long size = 1000;
-    bitset_create(pole_bitu, size);
+    bitset_alloc(pole_bitu, ARRAY_SIZE);
 
-    {
-    for(int i = 0; i < size; i++)
-        bitset_setbit(pole_bitu, size, BIT_1);
-    }
+
+    /*
+    for(int i = 0; i < ARRAY_SIZE; i++)
+        bitset_setbit(pole_bitu, i, BIT_1);
+    */
+    printf("%ld", pole_bitu[0]);
 
     Eratosthenes();
+    bitset_free(pole_bitu);
     return 0;
 
      
