@@ -11,8 +11,18 @@
 
 int main()
 {
-    my_hello();
-    return 0; 
+    unsigned long size = 1000;
+    bitset_create(pole_bitu, size);
+
+    {
+    for(int i = 0; i < size; i++)
+        bitset_setbit(pole_bitu, size, BIT_1);
+    }
+
+    Eratosthenes();
+    return 0;
+
+     
 }
 
 /*
