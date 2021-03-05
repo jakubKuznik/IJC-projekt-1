@@ -2,7 +2,6 @@ CC = gcc
 LD = gcc
 CFLAGS = -g -std=c11 -pedantic -Wall -Wextra -lm
 
-
 primes: primes.o error.o eratoshenes.o
 	gcc $(CFLAGS) primes.o eratoshenes.o error.o -o primes
 
