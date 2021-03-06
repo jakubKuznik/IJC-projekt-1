@@ -54,11 +54,16 @@ typedef unsigned long bitset_index_t;
 
     /* Získá hodnotu zadaného bitu, vrací hodnotu 0 nebo 1 */
     #define bitset_getbit(jmeno_pole, index) \
-        ((jmeno_pole[index/SIZE_U_INT + RESERVED] >> (index % SIZE_U_INT )) & 1)
+        (index >= jmeno_pole[0]) ? error_exit("bitset_setbit: Index %lu mimo roysah 0..%lu", index),0 \
+        :((jmeno_pole[index/SIZE_U_INT + RESERVED] >> (index % SIZE_U_INT )) & 1)  
+        
 
     /* Nastaví zadaný bit v poli na hodnotu zadanou výrazem */
     #define bitset_setbit(jmeno_pole, index, vyraz) \
-        ((vyraz != 0) ? (jmeno_pole[index/SIZE_U_INT + 1] |= 1L << (index % SIZE_U_INT)) : (jmeno_pole[index/SIZE_U_INT + 1] &= ~(1L << (index%SIZE_U_INT))))    
+        if(index >= jmeno_pole[0]) error_exit("bitset_setbit: Index %lu mimo roysah 0..%lu", index);\
+        ((vyraz != 0) ? \
+        (jmeno_pole[index/SIZE_U_INT + 1] |= 1L << (index % SIZE_U_INT))\
+        : (jmeno_pole[index/SIZE_U_INT + 1] &= ~(1L << (index%SIZE_U_INT))))    
 
     /* Vrátí deklarovanou velikost pole v bitech uloženou na indexu 0 */
     #define bitset_size(jmeno_pole) \
@@ -70,13 +75,17 @@ typedef unsigned long bitset_index_t;
 /* These ll compile if there is parameter USE_INLINE */
 #else
     /* Získá hodnotu zadaného bitu, vrací hodnotu 0 nebo 1 */
-    inline int bitset_getbit(bitset_t jmeno_pole, bitset_index_t index)
+    inline char bitset_getbit(bitset_t jmeno_pole, bitset_index_t index)
     {
+        if(index >= jmeno_pole[0])
+            error_exit("bitset_setbit: Index %lu mimo roysah 0..%lu", index);
         return ((jmeno_pole[index/SIZE_U_INT + RESERVED] >> (index % SIZE_U_INT )) & 1);
     }
     /* Nastaví zadaný bit v poli na hodnotu zadanou výrazem */
     inline void bitset_setbit(bitset_t jmeno_pole, bitset_index_t index,char vyraz)
     {
+        if(index >= jmeno_pole[0])
+            error_exit("bitset_setbit: Index %lu mimo roysah 0..%lu", index);
         ((vyraz != 0) ? (jmeno_pole[index/SIZE_U_INT + 1] |= 1L << (index % SIZE_U_INT)) : (jmeno_pole[index/SIZE_U_INT + 1] &= ~(1L << (index%SIZE_U_INT))));
     }
     
