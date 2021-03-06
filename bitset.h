@@ -37,26 +37,37 @@ typedef unsigned long bitset_index_t;
     if(jmeno_pole == NULL) error_exit("bitset_alloc: Chyba alokace paměti"); \
     jmeno_pole[0] = velikost
 
-
-/* Nastaví zadaný bit v poli na hodnotu zadanou výrazem */
-#define bitset_setbit(jmeno_pole, index, vyraz) \
-	((vyraz != 0) ? (jmeno_pole[index/SIZE_U_INT + 1] |= 1L << (index % SIZE_U_INT)) : (jmeno_pole[index/SIZE_U_INT + 1] &= ~(1L << (index%SIZE_U_INT))))    
-
-
-/* Získá hodnotu zadaného bitu, vrací hodnotu 0 nebo 1 */
-#define bitset_getbit(jmeno_pole, index) \
-    ((jmeno_pole[index/SIZE_U_INT + RESERVED] >> (index % SIZE_U_INT )) & 1)
-
-
 /* Uvolní paměť dynamicky (bitset_alloc) alokovaného pole */
 #define bitset_free(jmeno_pole)\
     free(jmeno_pole)
 
 
-/* Vrátí deklarovanou velikost pole v bitech uloženou na indexu 0 */
-#define bitset_size(jmeno_pole) \
-    jmeno_pole[0]
 
 
 
-//#ifndef USE_INLINE
+
+/* bitset_getbit(), bitset_setbit(), bitset_size()
+   Are macros that can be Inline functions        */
+/* These ll compile if there is parameter USE_INLINE */
+//#ifdef USE_INLINE
+
+
+
+/*These ll compile if there is NOT parameter USE_INLINE */
+#ifndef USE_INLINE
+
+
+    /* Získá hodnotu zadaného bitu, vrací hodnotu 0 nebo 1 */
+    #define bitset_getbit(jmeno_pole, index) \
+        ((jmeno_pole[index/SIZE_U_INT + RESERVED] >> (index % SIZE_U_INT )) & 1)
+
+    /* Nastaví zadaný bit v poli na hodnotu zadanou výrazem */
+    #define bitset_setbit(jmeno_pole, index, vyraz) \
+        ((vyraz != 0) ? (jmeno_pole[index/SIZE_U_INT + 1] |= 1L << (index % SIZE_U_INT)) : (jmeno_pole[index/SIZE_U_INT + 1] &= ~(1L << (index%SIZE_U_INT))))    
+
+    /* Vrátí deklarovanou velikost pole v bitech uloženou na indexu 0 */
+    #define bitset_size(jmeno_pole) \
+        jmeno_pole[0]
+
+
+#endif
