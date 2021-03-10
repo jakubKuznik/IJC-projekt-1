@@ -4,8 +4,6 @@
 // Compiled:    gcc 9.9.3.0
 // Template for working with array of bits  
 
-#ifndef _BITSET_H
-#define _BITSET_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,12 +11,13 @@
 #include "error.h"
 #include <limits.h>
 
+#ifndef _BITSET_H
+#define _BITSET_H
+
 
 #define SIZE_U_INT (sizeof(unsigned long) * 8)
 #define SIZE_U_INT_BYTES sizeof(unsigned long)
-//First node of array is reserved for array size
-//Second is reserved becouse we are dividing number so there has to be some reserve 
-#define RESERVED 2 
+#define RESERVED 1 //First node of array is reserved for array size 
 #define BIT_0 0
 #define BIT_1 1
 
@@ -39,7 +38,7 @@ typedef unsigned long bitset_index_t;
     _Static_assert(velikost >= 0, "CHYBA: Array can not be negative size."); \
     _Static_assert(velikost <= ULLONG_MAX, "CHYBA: Maximum size reached."); \
     bitset_t jmeno_pole =  (bitset_t) calloc(((velikost)/8) + SIZE_U_INT_BYTES, 1); \
-    if(jmeno_pole == NULL) error_exit("bitset_alloc: Calloc error."); \
+    if(jmeno_pole == NULL) error_exit("bitset_alloc: Chyba alokace paměti"); \
     jmeno_pole[0] = velikost
 
 /* Uvolní paměť dynamicky (bitset_alloc) alokovaného pole */
@@ -47,14 +46,15 @@ typedef unsigned long bitset_index_t;
     free(jmeno_pole)
 
 
+
 /*                          MACROS                   */ 
 /*These ll compile if there is NOT parameter USE_INLINE */
 #ifndef USE_INLINE
 
+
     /* Získá hodnotu zadaného bitu, vrací hodnotu 0 nebo 1 */
     #define bitset_getbit(jmeno_pole, index) \
-        (index >= jmeno_pole[0]) ? \
-         error_exit("bitset_setbit: Index %lu mimo roysah 0..%lu", index),0 \
+        (index >= jmeno_pole[0]) ? error_exit("bitset_setbit: Index %lu mimo roysah 0..%lu", index),0 \
         :((jmeno_pole[index/SIZE_U_INT + RESERVED] >> (index % SIZE_U_INT )) & 1)  
         
 
@@ -70,10 +70,10 @@ typedef unsigned long bitset_index_t;
         jmeno_pole[0]
 
 
+
 /*               INLINE FUNCTIONS                    */ 
 /* These ll compile if there is parameter USE_INLINE */
 #else
-
     /* Získá hodnotu zadaného bitu, vrací hodnotu 0 nebo 1 */
     inline char bitset_getbit(bitset_t jmeno_pole, bitset_index_t index)
     {
