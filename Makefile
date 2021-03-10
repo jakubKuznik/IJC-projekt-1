@@ -2,7 +2,7 @@ CC = gcc
 LD = gcc
 
 CFLAGS = -g -std=c11 -pedantic -Wall -Wextra -lm -O2 
-all: primes primes-i
+all: primes primes-i steg-decode
 
 #COPILE WITH MACROS 
 primes: primes.o error.o eratosthenes.o
@@ -32,6 +32,18 @@ eratosthenes-i.o: eratosthenes.c primes.h
 bitset.o: bitset.c bitset.h
 	gcc $(CFLAGS) -DUSE_INLINE -c bitset.c -o bitset.o
 	                
+
+
+steg-decode: steg-decode.o eratosthenes.o error.o ppm.o
+	gcc $(CFLAGS) steg-decode.o eratosthenes.o error.o ppm.o -o steg-decode
+
+steg-decode.o: steg-decode.c primes.h bitset.h error.h ppm.h
+	gcc $(CFLAGS) -c steg-decode.c -o steg-decode.o
+
+ppm.o: ppm.c error.h ppm.h
+	gcc $(CFLAGS) -c ppm.c -o ppm.o
+
+
 
 
 clean:
