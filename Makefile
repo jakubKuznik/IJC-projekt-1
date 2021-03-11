@@ -51,6 +51,6 @@ ppm.o: ppm.c error.h ppm.h
 clean:
 	rm *.o main
 
-run:
+run: primes primes-i
 	./primes
 	./primes-i
