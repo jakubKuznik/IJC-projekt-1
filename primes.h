@@ -5,5 +5,6 @@
 // Header file for primes.c and eratoshenes.c
 
 #include "bitset.h"
+#include <math.h>
 
 void Eratosthenes(bitset_t pole);

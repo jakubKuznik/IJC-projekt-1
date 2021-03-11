@@ -17,7 +17,7 @@
 
 #define SIZE_U_INT (sizeof(unsigned long) * 8)
 #define SIZE_U_INT_BYTES sizeof(unsigned long)
-#define RESERVED 1 //First node of array is reserved for array size 
+#define RESERVED 1//First node of array is reserved for array size 
 #define BIT_0 0
 #define BIT_1 1
 
@@ -29,15 +29,14 @@ typedef unsigned long bitset_index_t;
 /* Vytvoří a inicializuje pole bitů na stacku. */
 #define bitset_create(jmeno_pole, velikost) \
     _Static_assert(velikost >= 0, "ERROR: Array can not be negative size."); \
+    _Static_assert(velikost <= ULLONG_MAX, "CHYBA: Maximum size reached."); \
     long unsigned jmeno_pole[(velikost)/SIZE_U_INT + RESERVED] = {velikost, };\
     jmeno_pole[0] = velikost
 
-
 /* Alokuje pole bitu na heapu je potřeba uvolnit pamět pomocí bitset_free() */
-#define bitset_alloc(jmeno_pole,velikost)\
-    _Static_assert(velikost >= 0, "CHYBA: Array can not be negative size."); \
-    _Static_assert(velikost <= ULLONG_MAX, "CHYBA: Maximum size reached."); \
-    bitset_t jmeno_pole =  (bitset_t) calloc(((velikost)/8) + SIZE_U_INT_BYTES, 1); \
+#define bitset_alloc(jmeno_pole, velikost)\
+    assert((velikost > 0) && (velikost <= ULLONG_MAX)); \
+    bitset_t jmeno_pole =  (bitset_t) calloc(((velikost)/8) + (SIZE_U_INT_BYTES * RESERVED), 1); \
     if(jmeno_pole == NULL) error_exit("bitset_alloc: Chyba alokace paměti"); \
     jmeno_pole[0] = velikost
 
@@ -62,8 +61,8 @@ typedef unsigned long bitset_index_t;
     #define bitset_setbit(jmeno_pole, index, vyraz) \
         if(index >= jmeno_pole[0]) error_exit("bitset_setbit: Index %lu mimo roysah 0..%lu", index);\
         ((vyraz != 0) ? \
-        (jmeno_pole[index/SIZE_U_INT + 1] |= 1L << (index % SIZE_U_INT))\
-        : (jmeno_pole[index/SIZE_U_INT + 1] &= ~(1L << (index%SIZE_U_INT))))    
+        (jmeno_pole[index/SIZE_U_INT + RESERVED] |= 1L << (index % SIZE_U_INT))\
+        : (jmeno_pole[index/SIZE_U_INT + RESERVED] &= ~(1L << (index%SIZE_U_INT))))    
 
     /* Vrátí deklarovanou velikost pole v bitech uloženou na indexu 0 */
     #define bitset_size(jmeno_pole) \
@@ -86,7 +85,8 @@ typedef unsigned long bitset_index_t;
     {
         if(index >= jmeno_pole[0])
             error_exit("bitset_setbit: Index %lu mimo roysah 0..%lu", index);
-        ((vyraz != 0) ? (jmeno_pole[index/SIZE_U_INT + 1] |= 1L << (index % SIZE_U_INT)) : (jmeno_pole[index/SIZE_U_INT + 1] &= ~(1L << (index%SIZE_U_INT))));
+        ((vyraz != 0) ? (jmeno_pole[index/SIZE_U_INT + RESERVED] |= 1L << (index % SIZE_U_INT)) \
+        : (jmeno_pole[index/SIZE_U_INT + 1] &= ~(1L << (index%SIZE_U_INT))));
     }
     
     /* Vrátí deklarovanou velikost pole v bitech uloženou na indexu 0 */

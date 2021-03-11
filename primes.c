@@ -10,17 +10,13 @@
 
 
 #define ARRAY_SIZE 200000000
-
-
-int main()
+int main(void)
 {
     clock_t start;
     start = clock();
     int last_primes[10] = {0};  
 
-
-    //bitset_create(pole_bitu, ARRAY_SIZE);  //stack alocation
-    bitset_alloc(pole_bitu, ARRAY_SIZE);     //heap alocation
+    bitset_create(pole_bitu, ARRAY_SIZE);    
     Eratosthenes(pole_bitu);
     
     int j = 0;  //indicator for 10 last primes in given range 
@@ -38,6 +34,5 @@ int main()
     
     
     fprintf(stderr, "Time=%.3g\n", (double)(clock()-start)/CLOCKS_PER_SEC);
-    bitset_free(pole_bitu); 
     return 0;
 }

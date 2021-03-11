@@ -9,27 +9,27 @@
 #include "ppm.h"
 
 #define ERROR_BAD_FORMAT -1 //Code for bad file format 
-#define COLOR 3 //R*B*G
 #define LIMIT_IMAGE_SIZE 8000*8000*3
 
-/*
-načte obsah PPM souboru do touto funkcí dynamicky
-alokované struktury. Při chybě formátu použije funkci warning_msg
-a vrátí NULL.
+/**
+* načte obsah PPM souboru do touto funkcí dynamicky
+* alokované struktury. Při chybě formátu použije funkci warning_msg
+* a vrátí NULL.
 */
 struct ppm * ppm_read(const char * filename)
 {
     struct ppm *image = NULL;
-    int xsize_temp = 0, ysize_temp = 0;  //These are temporarily var. For image size.
-
+    unsigned int xsize_temp = 0, ysize_temp = 0; //These are temporarily var. For image size.
+    
     FILE *file = fopen(filename, "r");
     if(file == NULL) //check if fopen was succesfull 
         goto error_3;
 
     if(file_format(file) == ERROR_BAD_FORMAT) //check file format is bad  
         goto error_1;
-    
-    if(fscanf(file, "%d %d",&xsize_temp, &ysize_temp) != 2) //check if get size of image is succ.
+
+    //MAX CLR is value that always should be 255 
+    if(fscanf(file, "%u %u 255 ",&xsize_temp, &ysize_temp) != 2) //check if get size of image is succ.
         goto error_2;
 
     if((xsize_temp*ysize_temp*COLOR) > LIMIT_IMAGE_SIZE) //Check if image is bigger than our limit
@@ -39,8 +39,8 @@ struct ppm * ppm_read(const char * filename)
     image->xsize = xsize_temp;
     image->ysize = ysize_temp;
 
-    int c = 0; 
-    int index = 0;
+    int c = 0;   
+    unsigned int index = 0;
     while ((c = fgetc(file)) != EOF)
     {
         image->data[index++] = (char)c;
@@ -49,7 +49,7 @@ struct ppm * ppm_read(const char * filename)
     fclose(file);
     return image;
 
-/*Bad image format error */
+/* Bad image format error */
 error_1: 
     warning_msg(" Bad image format.\n");
     fclose(file);
@@ -75,13 +75,15 @@ error_4:
 }
  
 
-/*uvolní paměť dynamicky alokovanou v ppm_read*/
+/**
+ * Uvolní paměť dynamicky alokovanou v ppm_read*/
 void ppm_free(struct ppm *p)
 {
     free(p);
 }
 
-/*Check file format is ppm. If not return -1*/
+/**
+ * Check file format is ppm. If not return -1*/
 int file_format(FILE *file)
 {
     char buffer[16] = {0, }; 

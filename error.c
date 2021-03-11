@@ -11,8 +11,8 @@
 #include <stdlib.h>
 
 
-/*
-Write error and program continue 
+/**
+ * Write error and program continue 
 */
 void warning_msg(const char *fmt, ...)
 {
@@ -22,8 +22,8 @@ void warning_msg(const char *fmt, ...)
     vfprintf(stderr, fmt, arg);
 }
 
-/*
-Write error and end program 
+/**
+ * Write error and end program 
 */
 void error_exit(const char *fmt, ...)
 {

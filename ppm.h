@@ -6,6 +6,12 @@
 
 #include <stdio.h>
 
+/** R*G*B  */
+#define COLOR 3 
+
+/**
+ * Struct where ll be stored array of pixel and image width an height
+ */
 struct ppm 
 {
     unsigned xsize;
@@ -16,8 +22,10 @@ struct ppm
 struct ppm * ppm_read(const char * filename);
 
 
-/*uvolní paměť dynamicky alokovanou v ppm_read*/
+/**
+ * uvolní paměť dynamicky alokovanou v ppm_read*/
 void ppm_free(struct ppm *p);
 
-/*Check file format return NULL if foramt is bad*/
+/**
+ * Check file format return NULL if foramt is bad*/
 int file_format(FILE *file);
