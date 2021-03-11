@@ -54,4 +54,3 @@ clean:
 run:
 	./primes
 	./primes-i
-	./steg-decode

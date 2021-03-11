@@ -18,6 +18,7 @@
 #define SIZE_U_INT (sizeof(unsigned long) * 8)
 #define SIZE_U_INT_BYTES sizeof(unsigned long)
 #define RESERVED 1//First node of array is reserved for array size 
+#define RESERVED_TWO 1 //after bit creation there has to be one reserved node becouse of dividing
 #define BIT_0 0
 #define BIT_1 1
 
@@ -30,13 +31,13 @@ typedef unsigned long bitset_index_t;
 #define bitset_create(jmeno_pole, velikost) \
     _Static_assert(velikost >= 0, "ERROR: Array can not be negative size."); \
     _Static_assert(velikost <= ULLONG_MAX, "CHYBA: Maximum size reached."); \
-    long unsigned jmeno_pole[(velikost)/SIZE_U_INT + RESERVED] = {velikost, };\
+    long unsigned jmeno_pole[(velikost)/SIZE_U_INT + RESERVED + RESERVED_TWO] = {velikost, };\
     jmeno_pole[0] = velikost
 
 /* Alokuje pole bitu na heapu je potřeba uvolnit pamět pomocí bitset_free() */
 #define bitset_alloc(jmeno_pole, velikost)\
     assert((velikost > 0) && (velikost <= ULLONG_MAX)); \
-    bitset_t jmeno_pole =  (bitset_t) calloc(((velikost)/8) + (SIZE_U_INT_BYTES * RESERVED), 1); \
+    bitset_t jmeno_pole =  (bitset_t) calloc(((velikost)/8) + (SIZE_U_INT_BYTES * (RESERVED + RESERVED_TWO)), 1); \
     if(jmeno_pole == NULL) error_exit("bitset_alloc: Chyba alokace paměti"); \
     jmeno_pole[0] = velikost
 
